@@ -154,6 +154,27 @@ export class CheckoutEffects {
   );
 
   @Effect()
+  createWorldpayPaymentDetails$: Observable<any> = this.actions$.pipe(
+    ofType(fromActions.CREATE_WORLDPAY_PAYMENT_DETAILS),
+    map((action: any) => action.payload),
+    mergeMap(payload => {
+      return this.occCartService
+        .createWorldpayPaymentDetails(
+          payload.userId,
+          payload.cartId,
+          payload.paymentDetails
+        )
+        .pipe(
+          map(
+            () =>
+              new fromActions.SetPaymentDetailsSuccess(payload.paymentDetails)
+          ),
+          catchError(error => of(new fromActions.SetPaymentDetailsFail(error)))
+        );
+    })
+  );
+
+  @Effect()
   setPaymentDetails$: Observable<any> = this.actions$.pipe(
     ofType(fromActions.SET_PAYMENT_DETAILS),
     map((action: any) => action.payload),
@@ -181,6 +202,32 @@ export class CheckoutEffects {
     mergeMap(payload => {
       return this.occOrderService
         .placeOrder(payload.userId, payload.cartId)
+        .pipe(
+          map(data => {
+            for (const entry of data.entries) {
+              this.productImageConverter.convertProduct(entry.product);
+            }
+            return data;
+          }),
+          switchMap(data => [
+            new fromActions.PlaceOrderSuccess(data),
+            new fromGlobalMessagesActions.AddMessage({
+              text: 'Order placed successfully',
+              type: GlobalMessageType.MSG_TYPE_CONFIRMATION
+            })
+          ]),
+          catchError(error => of(new fromActions.PlaceOrderFail(error)))
+        );
+    })
+  );
+
+  @Effect()
+  placeWorldpayOrder$: Observable<any> = this.actions$.pipe(
+    ofType(fromActions.PLACE_WORLDPAY_ORDER),
+    map((action: any) => action.payload),
+    mergeMap(payload => {
+      return this.occOrderService
+        .placeWorldpayOrder(payload.userId, payload.cartId, payload.securityCode)
         .pipe(
           map(data => {
             for (const entry of data.entries) {

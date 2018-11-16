@@ -87,12 +87,37 @@ export class CheckoutService {
     }
   }
 
+  createWorldpayPaymentDetails(paymentInfo) {
+    if (this.actionAllowed()) {
+      this.checkoutStore.dispatch(
+        new fromCheckoutStore.CreateWorldpayPaymentDetails({
+          userId: this.cartData.userId,
+          cartId: this.cartData.cartId,
+          paymentDetails: paymentInfo
+        })
+      );
+    }
+  }
+
   placeOrder() {
     if (this.actionAllowed()) {
       this.checkoutStore.dispatch(
         new fromCheckoutStore.PlaceOrder({
           userId: this.cartData.userId,
-          cartId: this.cartData.cartId
+          cartId: this.cartData.cartId,
+        })
+      );
+    }
+  }
+
+  placeWorldpayOrder(paymentDetails) {
+    if (this.actionAllowed()) {
+      this.checkoutStore.dispatch(
+        new fromCheckoutStore.PlaceWorldpayOrder({
+          userId: this.cartData.userId,
+          cartId: this.cartData.cartId,
+          // TODO-E2Y: This needs to come from payment details!!!!
+          securityCode: '123'
         })
       );
     }
