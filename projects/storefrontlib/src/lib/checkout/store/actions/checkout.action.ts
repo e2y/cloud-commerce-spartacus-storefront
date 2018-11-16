@@ -24,6 +24,7 @@ export const SET_DELIVERY_MODE = '[Checkout] Set Delivery Mode';
 export const SET_DELIVERY_MODE_FAIL = '[Checkout] Set Delivery Mode Fail';
 export const SET_DELIVERY_MODE_SUCCESS = '[Checkout] Set Delivery Mode Success';
 
+
 export const CREATE_PAYMENT_DETAILS = '[Checkout] Create Payment Details';
 export const CREATE_PAYMENT_DETAILS_FAIL =
   '[Checkout] Create Payment Details Fail';
@@ -41,6 +42,10 @@ export const PLACE_ORDER_SUCCESS = '[Checkout] Place Order Success';
 
 export const CLEAR_CHECKOUT_STEP = '[Checkout] Clear One Checkout Step';
 export const CLEAR_CHECKOUT_DATA = '[Checkout] Clear Checkout Data';
+
+export const CREATE_WORLDPAY_PAYMENT_DETAILS = '[Checkout] Create Worldpay Payment Details';
+export const PLACE_WORLDPAY_ORDER = '[Checkout] Place Worldpay Order';
+
 
 export class AddDeliveryAddress implements Action {
   readonly type = ADD_DELIVERY_ADDRESS;
@@ -111,6 +116,13 @@ export class CreatePaymentDetails implements Action {
   ) {}
 }
 
+export class CreateWorldpayPaymentDetails implements Action {
+  readonly type = CREATE_WORLDPAY_PAYMENT_DETAILS;
+  constructor(
+    public payload: { userId: string; cartId: string; paymentDetails: any }
+  ) {}
+}
+
 export class CreatePaymentDetailsFail implements Action {
   readonly type = CREATE_PAYMENT_DETAILS_FAIL;
   constructor(public payload: any) {}
@@ -141,6 +153,11 @@ export class SetPaymentDetailsSuccess implements Action {
 export class PlaceOrder implements Action {
   readonly type = PLACE_ORDER;
   constructor(public payload: { userId: string; cartId: string }) {}
+}
+
+export class PlaceWorldpayOrder implements Action {
+  readonly type = PLACE_WORLDPAY_ORDER;
+  constructor(public payload: { userId: string; cartId: string; securityCode: string }) {}
 }
 
 export class PlaceOrderFail implements Action {
@@ -187,6 +204,7 @@ export type CheckoutAction =
   | SetPaymentDetailsFail
   | SetPaymentDetailsSuccess
   | PlaceOrder
+  | PlaceWorldpayOrder
   | PlaceOrderFail
   | PlaceOrderSuccess
   | ClearCheckoutStep

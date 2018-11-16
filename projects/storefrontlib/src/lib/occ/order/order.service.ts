@@ -22,7 +22,17 @@ export class OccOrderService {
     );
   }
 
-  public placeOrder(userId: string, cartId: string): Observable<Order> {
+  protected getWorldpayOrderEndpoint(userId: string) {
+    const orderEndpoint = '/users/' + userId + '/worldpayorders';
+    return (
+      (this.config.server.baseUrl || '') +
+      this.config.server.occPrefix +
+      this.config.site.baseSite +
+      orderEndpoint
+    );
+  }
+
+  public placeOrder(userId: string, cartId: string): Observable<any> {
     const url = this.getOrderEndpoint(userId);
     const params = new HttpParams({
       fromString: 'cartId=' + cartId + '&' + FULL_PARAMS
@@ -34,6 +44,21 @@ export class OccOrderService {
 
     return this.http
       .post<Order>(url, {}, { headers, params })
+      .pipe(catchError((error: any) => throwError(error.json())));
+  }
+
+  public placeWorldpayOrder(userId: string, cartId: string, securityCode: string): Observable<any> {
+    const url = this.getWorldpayOrderEndpoint(userId);
+    const params = new HttpParams({
+      fromString: 'cartId=' + cartId + '&securityCode=' + securityCode + '&' + FULL_PARAMS
+    });
+
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/x-www-form-urlencoded'
+    });
+
+    return this.http
+      .post(url, {}, { headers, params })
       .pipe(catchError((error: any) => throwError(error.json())));
   }
 

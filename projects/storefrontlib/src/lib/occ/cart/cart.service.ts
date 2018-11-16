@@ -14,6 +14,8 @@ import { CustomEncoder } from '../custom.encoder';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { catchError, map } from 'rxjs/operators';
 
+import '../../../../../../assets/worldpay-cse';
+
 // for mini cart
 const BASIC_PARAMS =
   'DEFAULT,deliveryItemsQuantity,totalPrice(formattedValue),' +
@@ -296,6 +298,52 @@ export class OccCartService {
         this.getCartEndpoint(userId) + cartId + '/payment/sop/response',
         httpParams,
         { headers }
+      )
+      .pipe(catchError((error: any) => throwError(error)));
+  }
+
+  public createWorldpayPaymentDetails(
+    userId: string,
+    cartId: string,
+    paymentDetails: any,
+  ): Observable<any> {
+    // TODO-E2Y: Make this configurable
+    Worldpay.setPublicKey('1#10001#c745fe13416ffc5f9283f47f7b18e58a55a1e152d8'
+      + '73cf7e31cd87e04dda905570b53bd6996c54d2f90a7ade6e65'
+      + 'ba45853617472b1ad78d02f0bd9183af22d8dd6002a7857d0c'
+      + '4f5c102bd29864ae9b5b2caf3ef22932a7b2c6f00f819f6ac9'
+      + '2905d9662d0905526f0a99160e49dd613b07212fb9429535a2'
+      + '8b54a087fc3541a8fc214e46a07ebacab0f5b6a60331cd6616'
+      + '8548c097c716df09332d95faf3d9717107a5db5ce553406688'
+      + 'a368d6d44f79eb4c3366068e7c4dbe1f1987ef6ac54bc4e119'
+      + '5021ceac831141553986db5a5b8206abc0e0b36ed4adf31ae6'
+      + '92829057dbb0c99270825335405e816f40fe3a3051c323695e'
+      + '52bf97fccda813c45a31');
+
+    const token = Worldpay.encrypt({
+      cvc: paymentDetails.cvn,
+      cardHolderName: paymentDetails.accountHolderName,
+      cardNumber: paymentDetails.cardNumber,
+      expiryMonth: paymentDetails.expiryMonth,
+      expiryYear: paymentDetails.expiryYear
+    }, error => {
+      console.log(error);
+    });
+
+    console.log(paymentDetails);
+
+    return this.http
+      .post(
+        this.getCartEndpoint(userId) + cartId + '/worldpaypaymentdetails'
+        + `?accountHolderName=${paymentDetails.accountHolderName}&cseToken=${token}&cardType=${paymentDetails.cardType.code}`
+        + `&expiryMonth=${paymentDetails.expiryMonth}&expiryYear=${paymentDetails.expiryYear}`
+        + `&billingAddress.titleCode=${paymentDetails.billingAddress.titleCode}`
+        + `&billingAddress.firstName=${paymentDetails.billingAddress.firstName}`
+        + `&billingAddress.lastName=${paymentDetails.billingAddress.lastName}`
+        + `&billingAddress.line1=${paymentDetails.billingAddress.line1}&billingAddress.line2=${paymentDetails.billingAddress.line2}`
+        + `&billingAddress.town=${paymentDetails.billingAddress.town}&billingAddress.postalCode=${paymentDetails.billingAddress.postalCode}`
+        + `&billingAddress.country.isocode=${paymentDetails.billingAddress.country.isocode}`,
+        null
       )
       .pipe(catchError((error: any) => throwError(error)));
   }

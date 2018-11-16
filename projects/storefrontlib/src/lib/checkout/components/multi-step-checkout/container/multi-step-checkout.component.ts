@@ -125,9 +125,10 @@ export class MultiStepCheckoutComponent implements OnInit, OnDestroy {
         .pipe(
           filter(order => Object.keys(order).length !== 0 && this.step === 4)
         )
-        .subscribe(() => {
+        .subscribe(order => {
           // checkout steps are done
           this.done = true;
+          this.checkoutService.orderDetails = order;
           this.routingService.go(['orderConfirmation']);
         })
     );
@@ -183,23 +184,20 @@ export class MultiStepCheckoutComponent implements OnInit, OnDestroy {
   }
 
   addPaymentInfo({ newPayment, payment }) {
+    // TODO-E2Y: At the moment the form for separate billing address does not appear to exist
+    payment.billingAddress = this.deliveryAddress;
+
     if (newPayment) {
-      payment.billingAddress = this.deliveryAddress;
-      this.checkoutService.createPaymentDetails(payment);
+      this.checkoutService.createWorldpayPaymentDetails(payment);
       return;
     }
 
-    // if the selected paymetn is the same as the cart's one
-    if (this.paymentDetails && this.paymentDetails.id === payment.id) {
-      this.nextStep(4);
-      return;
-    }
+    // TODO-E2Y: There is a bug here where setting paymentDetailID to an order does not set the payment address...
     this.checkoutService.setPaymentDetails(payment);
-    return;
   }
 
   placeOrder() {
-    this.checkoutService.placeOrder();
+    this.checkoutService.placeWorldpayOrder(this.paymentDetails);
   }
 
   toggleTAndC() {
