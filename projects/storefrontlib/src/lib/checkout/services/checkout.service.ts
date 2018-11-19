@@ -116,8 +116,7 @@ export class CheckoutService {
         new fromCheckoutStore.PlaceWorldpayOrder({
           userId: this.cartData.userId,
           cartId: this.cartData.cartId,
-          // TODO-E2Y: This needs to come from payment details!!!!
-          securityCode: '123'
+          securityCode: paymentDetails.cvn
         })
       );
     }
