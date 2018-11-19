@@ -7,6 +7,7 @@ import {
 
 import { CheckoutService } from '../../services/checkout.service';
 import { Card } from '../../../ui/components/card/card.component';
+import { ProductImageConverterService } from '../../../product/converters/product-image-converter.service';
 
 @Component({
   selector: 'cx-order-confirmation',
@@ -17,10 +18,18 @@ import { Card } from '../../../ui/components/card/card.component';
 export class OrderConfirmationComponent implements OnInit, OnDestroy {
   order: any;
 
-  constructor(protected checkoutService: CheckoutService) {}
+  constructor(
+    protected checkoutService: CheckoutService,
+    private productImageConverter: ProductImageConverterService
+  ) {
+
+  }
 
   ngOnInit() {
-    this.order = this.checkoutService.orderDetails;
+    this.order = this.checkoutService.orderDetails.order;
+    for (const entry of this.order.entries) {
+      this.productImageConverter.convertProduct(entry.product);
+    }
   }
 
   ngOnDestroy() {

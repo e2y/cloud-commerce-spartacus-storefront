@@ -229,12 +229,6 @@ export class CheckoutEffects {
       return this.occOrderService
         .placeWorldpayOrder(payload.userId, payload.cartId, payload.securityCode)
         .pipe(
-          map(data => {
-            for (const entry of data.entries) {
-              this.productImageConverter.convertProduct(entry.product);
-            }
-            return data;
-          }),
           switchMap(data => [
             new fromActions.PlaceOrderSuccess(data),
             new fromGlobalMessagesActions.AddMessage({
