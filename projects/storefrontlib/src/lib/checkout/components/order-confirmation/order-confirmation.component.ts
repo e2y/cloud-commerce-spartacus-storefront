@@ -8,6 +8,9 @@ import { Observable } from 'rxjs';
 
 import { CheckoutService } from '../../facade/checkout.service';
 import { Card } from '../../../ui/components/card/card.component';
+import { ProductImageConverterService } from '../../../../../../core/src/product/store/converters/product-image-converter.service.ts';
+
+
 
 @Component({
   selector: 'cx-order-confirmation',
@@ -18,10 +21,19 @@ import { Card } from '../../../ui/components/card/card.component';
 export class OrderConfirmationComponent implements OnInit, OnDestroy {
   order$: Observable<any>;
 
-  constructor(protected checkoutService: CheckoutService) {}
+  constructor(
+    protected checkoutService: CheckoutService,
+    private productImageConverter: ProductImageConverterService
+  ) {
+
+  }
 
   ngOnInit() {
     this.order$ = this.checkoutService.orderDetails$;
+    this.order = this.checkoutService.orderDetails.order;
+    for (const entry of this.order.entries) {
+      this.productImageConverter.convertProduct(entry.product);
+    }
   }
 
   ngOnDestroy() {

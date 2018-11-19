@@ -184,7 +184,6 @@ export class MultiStepCheckoutComponent implements OnInit, OnDestroy {
   }
 
   addPaymentInfo({ newPayment, payment }) {
-    // TODO-E2Y: At the moment the form for separate billing address does not appear to exist
     payment.billingAddress = this.deliveryAddress;
 
     if (newPayment) {
