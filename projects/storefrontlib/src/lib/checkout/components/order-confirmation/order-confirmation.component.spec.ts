@@ -38,11 +38,22 @@ const mockCheckoutService = {
     paymentInfo: {
       billingAddress: {
         country: {}
-      }
+      },
+      deliveryMode: {},
+      paymentInfo: {
+        billingAddress: {
+          country: {}
+        }
+      },
+      entries: []
     }
   }),
   clearCheckoutData: createSpy()
 };
+
+class ProductImageConverterServiceMock {
+  convertProduct: () => {};
+}
 
 describe('OrderConfirmationComponent', () => {
   let component: OrderConfirmationComponent;

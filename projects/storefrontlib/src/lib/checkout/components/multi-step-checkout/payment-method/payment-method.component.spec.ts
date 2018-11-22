@@ -324,8 +324,8 @@ describe('PaymentMethodComponent', () => {
         .find(el => el.nativeElement.innerText === 'Continue');
 
     it('should render only when existing payment methods has been selected', async () => {
-      mockUserService.paymentMethodsLoading$.next(false);
-      mockUserService.paymentMethods$.next(mockPaymentMethods);
+      mockCheckoutService.paymentMethodsLoading$.next(false);
+      mockCheckoutService.paymentMethods$.next(mockPaymentMethods);
       expect(getCvnBox()).toBeFalsy();
 
       component.paymentMethodSelected(mockPaymentMethod1, 1);
@@ -334,8 +334,8 @@ describe('PaymentMethodComponent', () => {
     });
 
     it('should change the cvn on input change', async () => {
-      mockUserService.paymentMethodsLoading$.next(false);
-      mockUserService.paymentMethods$.next(mockPaymentMethods);
+      mockCheckoutService.paymentMethodsLoading$.next(false);
+      mockCheckoutService.paymentMethods$.next(mockPaymentMethods);
       component.paymentMethodSelected(mockPaymentMethod1, 1);
       fixture.detectChanges();
 
@@ -347,8 +347,8 @@ describe('PaymentMethodComponent', () => {
     });
 
     it('should disable the next button if CVN is not present', async () => {
-      mockUserService.paymentMethodsLoading$.next(false);
-      mockUserService.paymentMethods$.next(mockPaymentMethods);
+      mockCheckoutService.paymentMethodsLoading$.next(false);
+      mockCheckoutService.paymentMethods$.next(mockPaymentMethods);
       component.paymentMethodSelected(mockPaymentMethod3, 1);
       component.setCvn(null);
 
@@ -358,8 +358,8 @@ describe('PaymentMethodComponent', () => {
     });
 
     it('should enable the next button when CVN is present', async () => {
-      mockUserService.paymentMethodsLoading$.next(false);
-      mockUserService.paymentMethods$.next(mockPaymentMethods);
+      mockCheckoutService.paymentMethodsLoading$.next(false);
+      mockCheckoutService.paymentMethods$.next(mockPaymentMethods);
       component.paymentMethodSelected(mockPaymentMethod3, 1);
       component.setCvn('123');
 
