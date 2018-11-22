@@ -125,10 +125,10 @@ export class MultiStepCheckoutComponent implements OnInit, OnDestroy {
         .pipe(
           filter(order => Object.keys(order).length !== 0 && this.step === 4)
         )
-        .subscribe(order => {
+        .subscribe(() => {
           // checkout steps are done
           this.done = true;
-          this.checkoutService.orderDetails = order;
+          //this.checkoutService.orderDetails$ = order;
           this.routingService.go(['orderConfirmation']);
         })
     );
