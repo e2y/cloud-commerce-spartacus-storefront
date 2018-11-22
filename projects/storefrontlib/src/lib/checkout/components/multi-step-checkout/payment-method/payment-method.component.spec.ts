@@ -25,6 +25,14 @@ const mockPaymentMethod2 = {
   cvn: '222'
 };
 
+const mockPaymentMethod3 = {
+  accountHolderName: 'Name 2',
+  cardNumber: '2222222222',
+  cardType: 'Visa',
+  expiryMonth: '02',
+  expiryYear: '3000',
+};
+
 const mockPaymentMethods = [mockPaymentMethod1, mockPaymentMethod2];
 
 @Component({
@@ -152,6 +160,13 @@ describe('PaymentMethodComponent', () => {
   it('should call back()', () => {
     component.back();
     expect(component.backStep.emit).toHaveBeenCalled();
+  });
+
+  it('should call setCvn()', () => {
+    component.paymentMethodSelected(mockPaymentMethod3, 1);
+    component.setCvn('900');
+
+    expect(component.selectedPayment.cvn).toEqual('900');
   });
 
   describe('UI continue button', () => {
@@ -285,6 +300,59 @@ describe('PaymentMethodComponent', () => {
       mockCheckoutService.paymentMethods$.next(mockPaymentMethods);
       fixture.detectChanges();
       expect(getSpinner()).toBeFalsy();
+    });
+  });
+
+  describe('UI CVN box for saved cards', () => {
+    const getCvnBox = () => fixture.debugElement.query(By.css('#cVVNumber'));
+    const getContinueBtn = () =>
+      fixture.debugElement
+        .queryAll(By.css('.btn-primary'))
+        .find(el => el.nativeElement.innerText === 'Continue');
+
+    it('should render only when existing payment methods has been selected', async () => {
+      mockUserService.paymentMethodsLoading$.next(false);
+      mockUserService.paymentMethods$.next(mockPaymentMethods);
+      expect(getCvnBox()).toBeFalsy();
+
+      component.paymentMethodSelected(mockPaymentMethod1, 1);
+      fixture.detectChanges();
+      expect(getCvnBox()).toBeTruthy();
+    });
+
+    it('should change the cvn on input change', async () => {
+      mockUserService.paymentMethodsLoading$.next(false);
+      mockUserService.paymentMethods$.next(mockPaymentMethods);
+      component.paymentMethodSelected(mockPaymentMethod1, 1);
+      fixture.detectChanges();
+
+      const inputElement = getCvnBox().nativeElement;
+      inputElement.value = '444';
+      inputElement.dispatchEvent(new Event('change'));
+
+      expect(component.selectedPayment.cvn).toEqual('444');
+    });
+
+    it('should disable the next button if CVN is not present', async () => {
+      mockUserService.paymentMethodsLoading$.next(false);
+      mockUserService.paymentMethods$.next(mockPaymentMethods);
+      component.paymentMethodSelected(mockPaymentMethod3, 1);
+      component.setCvn(null);
+
+      fixture.detectChanges();
+
+      expect(getContinueBtn().nativeElement.disabled).toEqual(true);
+    });
+
+    it('should enable the next button when CVN is present', async () => {
+      mockUserService.paymentMethodsLoading$.next(false);
+      mockUserService.paymentMethods$.next(mockPaymentMethods);
+      component.paymentMethodSelected(mockPaymentMethod3, 1);
+      component.setCvn('123');
+
+      fixture.detectChanges();
+
+      expect(getContinueBtn().nativeElement.disabled).toEqual(false);
     });
   });
 });

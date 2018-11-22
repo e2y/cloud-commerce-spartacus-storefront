@@ -13,6 +13,7 @@ import { CheckoutService } from '../../../services/checkout.service';
 import { Card } from '../../../../ui/components/card/card.component';
 import { masterCardImgSrc } from '../../../../ui/images/masterCard';
 import { visaImgSrc } from '../../../../ui/images/visa';
+import { infoIconImgSrc } from '../../../../ui/images/info-icon';
 
 @Component({
   selector: 'cx-payment-method',
@@ -34,6 +35,8 @@ export class PaymentMethodComponent implements OnInit {
   addPaymentInfo = new EventEmitter<any>();
 
   constructor(protected checkoutService: CheckoutService) {}
+
+  infoIconImgSrc = infoIconImgSrc;
 
   ngOnInit() {
     this.isLoading$ = this.checkoutService.paymentMethodsLoading$;
@@ -88,10 +91,15 @@ export class PaymentMethodComponent implements OnInit {
       const card = this.cards[i];
       if (i === index) {
         card.header = 'SELECTED';
+
       } else {
         card.header = '';
       }
     }
+  }
+
+  setCvn(cvn) {
+    this.selectedPayment.cvn = cvn;
   }
 
   next() {
