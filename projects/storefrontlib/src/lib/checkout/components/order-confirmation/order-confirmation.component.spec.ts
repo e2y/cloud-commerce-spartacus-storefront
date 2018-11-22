@@ -3,6 +3,7 @@ import { Component, Input } from '@angular/core';
 import { OrderConfirmationComponent } from './order-confirmation.component';
 import { By } from '@angular/platform-browser';
 import { CheckoutService } from '../../services';
+import { ProductImageConverterService } from '../../../product/converters/product-image-converter.service';
 import { CartService } from '../../../cart/services';
 
 @Component({ selector: 'cx-order-summary', template: '' })
@@ -26,17 +27,24 @@ class MockCartComponent {
 class CheckoutServiceMock {
   entries;
   orderDetails = {
-    code: 'test-code-412',
-    deliveryAddress: {
-      country: {}
-    },
-    deliveryMode: {},
-    paymentInfo: {
-      billingAddress: {
+    order: {
+      code: 'test-code-412',
+      deliveryAddress: {
         country: {}
-      }
+      },
+      deliveryMode: {},
+      paymentInfo: {
+        billingAddress: {
+          country: {}
+        }
+      },
+      entries: []
     }
   };
+}
+
+class ProductImageConverterServiceMock {
+  convertProduct: () => {};
 }
 
 describe('OrderConfirmationComponent', () => {
@@ -53,6 +61,7 @@ describe('OrderConfirmationComponent', () => {
       ],
       providers: [
         { provide: CheckoutService, useClass: CheckoutServiceMock },
+        { provide: ProductImageConverterService, useClass: ProductImageConverterServiceMock },
         { provide: CartService, useValue: {} }
       ]
     }).compileComponents();
