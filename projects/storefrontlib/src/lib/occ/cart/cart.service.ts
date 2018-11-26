@@ -16,6 +16,7 @@ import { catchError, map } from 'rxjs/operators';
 
 import '../../../../../../assets/worldpay-cse';
 
+
 // for mini cart
 const BASIC_PARAMS =
   'DEFAULT,deliveryItemsQuantity,totalPrice(formattedValue),' +
@@ -307,6 +308,7 @@ export class OccCartService {
     cartId: string,
     paymentDetails: any,
   ): Observable<any> {
+    const Worldpay = window['Worldpay'];
     // TODO-E2Y: Make this configurable
     Worldpay.setPublicKey('1#10001#c745fe13416ffc5f9283f47f7b18e58a55a1e152d8'
       + '73cf7e31cd87e04dda905570b53bd6996c54d2f90a7ade6e65'
