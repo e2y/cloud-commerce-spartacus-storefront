@@ -18,7 +18,7 @@ export function reducer(
     case fromUserAddressesAction.LOAD_USER_ADDRESSES_SUCCESS: {
       const list = action.payload;
 
-      if (list !== undefined) {
+      if (list !== undefined && list.length > 0) {
         return {
           ...state,
           list,

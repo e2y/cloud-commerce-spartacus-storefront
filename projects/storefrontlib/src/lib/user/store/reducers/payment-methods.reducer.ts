@@ -17,8 +17,7 @@ export function reducer(
   switch (action.type) {
     case fromPaymentMethodsAction.LOAD_USER_PAYMENT_METHODS_SUCCESS: {
       const list = action.payload;
-
-      if (list !== undefined) {
+      if (list !== undefined && list.length > 0) {
         return {
           ...state,
           list,
