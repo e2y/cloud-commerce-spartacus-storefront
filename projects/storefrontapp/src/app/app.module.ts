@@ -1,8 +1,11 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { StorefrontComponent, StorefrontModule } from '@spartacus/storefront';
+import { StorefrontModule } from '@spartacus/storefront';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { environment } from '../environments/environment.prod';
+
+import { AppComponent } from './app.component';
+
 
 const devImports = [];
 
@@ -11,6 +14,7 @@ if (!environment.production) {
 }
 
 @NgModule({
+  declarations: [AppComponent],
   imports: [
     BrowserModule,
     StorefrontModule.withConfig({
@@ -26,6 +30,6 @@ if (!environment.production) {
     ...devImports
   ],
 
-  bootstrap: [StorefrontComponent]
+  bootstrap: [AppComponent]
 })
 export class AppModule {}
