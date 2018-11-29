@@ -1,11 +1,12 @@
 import * as fromAction from '../actions';
+import { Region } from '@spartacus/core';
 
 export interface RegionsState {
-  entities: any;
+  entities: Region[];
 }
 
 export const initialState: RegionsState = {
-  entities: {}
+  entities: []
 };
 
 export function reducer(
@@ -15,7 +16,8 @@ export function reducer(
   switch (action.type) {
     case fromAction.LOAD_REGIONS_SUCCESS: {
       const entities = action.payload;
-      if (entities) {
+
+      if (entities !== undefined && entities.length > 0) {
         return {
           ...state,
           entities

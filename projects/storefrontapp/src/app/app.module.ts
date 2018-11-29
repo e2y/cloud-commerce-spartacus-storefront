@@ -6,7 +6,6 @@ import { environment } from '../environments/environment.prod';
 
 import { AppComponent } from './app.component';
 
-
 const devImports = [];
 
 if (!environment.production) {
